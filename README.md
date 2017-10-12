@@ -33,12 +33,13 @@ When I was researching PDO and mysqli_*, I had a hard time figuring out how to d
 Now I remember when I first used mysqli_* you would use a while statement, and it's pretty easy to do, but not as easy with prepared statements. Here is how you do it with my function. Let's say we have these headers:
 
 Table Name: **users**
-| uid | fname 	   | lname	   |
-|-----|------------|-----------|
-| 1	  | John	   | Doe	   |
-| 2	  | Jane	   | Doe	   |
-| 3	  | Oswald	   | Trackt	   |
-| 4	  | John	   | Baldwin   |
+
+| uid | fname | lname |
+| --- | --- | --- |
+| 1 | John | Doe |
+| 2 | Jane | Doe |
+| 3 | Oswald | Trackt |
+| 4 | John | Baldwin |
 
 Let's start with selecting all columns.
 
@@ -88,7 +89,7 @@ Array
 And from there, all you really need to do is loop through the array like any other PHP array. In other interfaces I have mostly seen people use while loops to get through their data, but for this data you can use a for loop or a foreach loop, which I find easier and cleaner.
 
 
-#Contributors
+# Contributors
 Project Founder - [GrumpyCrouton](https://stackoverflow.com/users/5827005/grumpycrouton)
 
 If you would like to help contribute to this project, please let me know.
