@@ -28,9 +28,9 @@ I wrote this class going for simplicity. As such, it is very easy to use. This i
 
 ### Select & Loop
 
-When I was researching PDO and mysqli_*, I had a hard time figuring out how to do simple things like looping through results from a query (Using prepared statements). There were few straightforward answers for this, so I'm going to try to explain it the best I can.
+When I was researching PDO and `mysqli_*`, I had a hard time figuring out how to do simple things like looping through results from a query (Using prepared statements). There were few straightforward answers for this, so I'm going to try to explain it the best I can.
 
-Now I remember when I first used mysqli_* you would use a while statement, and it's pretty easy to do, but not as easy with prepared statements. Here is how you do it with my function. Let's say we have these headers:
+Now I remember when I first used `mysqli_*` you would use a while statement, and it's pretty easy to do, but not as easy with prepared statements. Here is how you do it with my function. Let's say we have these headers:
 
 Table Name: **users**
 
