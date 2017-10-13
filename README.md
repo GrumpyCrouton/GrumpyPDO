@@ -3,6 +3,9 @@ A simple PHP class wrapper for PDO.
 
 I called this project GrumpyPDO because the native syntax made me so grumpy! (Actually, it's just because my username is Grumpy and I'm not very creative)
 
+#### Project Views:
+![view counter](http://simplehitcounter.com/hit.php?uid=2307714&f=16777215&b=16711680)
+
 ## Background
 
 After refactoring a ton of SQLite statements to PDO, I realized there wasn't really an alternative to SQLite's [querysingle](http://php.net/manual/en/sqlite3.querysingle.php) function. I also realized that my code was a bit longer than it used to be, because every statement needed parameters to be binded seperately from the query itself. This is when I wrote a simple function that I believe made my syntax **easier to read**, **easier to use**, and most importantly **more secure** as I'm effectively able to use prepared statements in a way that is more comfortable, thus making me more likely to use them more often and whenever necessary.
