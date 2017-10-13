@@ -3,7 +3,8 @@ A simple PHP class wrapper for PDO.
 
 I called this project GrumpyPDO because the native syntax made me so grumpy! (Actually, it's just because my username is Grumpy and I'm not very creative)
 
-Project Views: ![view counter](http://simplehitcounter.com/hit.php?uid=2307714&f=16777215&b=16711680)
+#### Project Views:
+![view counter](http://simplehitcounter.com/hit.php?uid=2307714&f=16777215&b=16711680)
 
 ## Background
 
