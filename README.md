@@ -22,6 +22,24 @@ include "grumpypdo.php";
 $db = new GrumpyPDO("localhost", "username", "password", "database");
 ```
 
+As of patch-1 you can also set PDO attributes and a charset on the fly.
+```
+include "grumpypdo.php";
+
+$opt = [
+    "charset" => "utf8",
+    "options" => [
+    	PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+	PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+	PDO::ATTR_EMULATE_PREPARES => false,
+    ]
+];
+
+$db = new GrumpyPDO("localhost", "username", "password", "database", $opt);
+```
+
+> Note: In the example above with the `$opt` variable, these are the default settings of the class, but I was trying to show that you can set whatever you want there.
+
 ## Simple Usage Instructions
 
 I wrote this class going for simplicity. As such, it is very easy to use. This is some basic ways that you can use this class, but some more complicated things may be documented in the wiki.
@@ -47,7 +65,7 @@ Let's start with selecting all columns.
 
 ##### GrumpyPDO
 ```
-$stmt = $db->query("SELECT * FROM users")->fetchAll();
+$stmt = $db->run("SELECT * FROM users")->fetchAll();
 ```
 
 Notice I used `fetchAll()` after the query, this is a "PDOStatement". Because the class returns the query as an object, you can use native PDO statement types, making this solution very powerful.
@@ -122,11 +140,9 @@ Array
 
 And from there, all you really need to do is loop through the array like any other PHP array. In other interfaces I have mostly seen people use while loops to get through their data, but for this data you can use a for loop or a foreach loop, which I find easier and cleaner.
 
-The same query as above can be done natively by PDO without an extra class, like this:
-
 ### Why GrumpyPDO is useful
 
-If you notice, regular queries are exactly the same syntax as native PDO, but you can skip all of the setup as it is already done for you in the class.
+If you notice, regular queries are exactly the same syntax as native PDO (Except use of `run()` instead of `query()`), but you can skip all of the setup as it is already done for you in the class.
 
 The class really comes in handy when you consider parameterizing your queries. This class allows you to **easily** prepare your queries and pass variables all in one line of code.
 
@@ -137,9 +153,9 @@ Consider the table from above, and consider that we only want results of people 
 #### GrumpyPDO
 ```
 $name = "John";
-$stmt = $db->query("SELECT * FROM users WHERE fname=?", [$name])->fetchAll();
+$stmt = $db->run("SELECT * FROM users WHERE fname=?", [$name])->fetchAll();
 //OR
-$stmt = $db->query("SELECT * FROM users WHERE fname=:name", ["name" => $name])->fetchAll();
+$stmt = $db->run("SELECT * FROM users WHERE fname=:name", ["name" => $name])->fetchAll();
 ```
 
 #### Native PDO
@@ -159,7 +175,7 @@ $result = $stmt->fetchAll();
 
 #### Results
 
-Each would return the same, following array, but _in my opinion_, the GrumpyPDO syntax is much simpler, you don't have to remember to `prepare()` (As it's always `query()`), AND it only takes 1 line for the actual query instead of 3-4. I think you could technically write native PDO all in one line, but it would be a pretty long line and would probably hurt readability. 
+Each would return the same, following array, but _in my opinion_, the GrumpyPDO syntax is much simpler, you don't have to remember to `prepare()` (As it's always `run()`), AND it only takes 1 line for the actual query instead of 3-4. I think you could technically write native PDO all in one line, but it would be a pretty long line and would probably hurt readability. 
 
 ```
 Array
