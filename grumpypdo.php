@@ -15,7 +15,7 @@ class GrumpyPdo extends \PDO
         if($attributes == NULL && !is_array($attributes)) {
             $attributes = array();
         } else {
-            if(empty($attributes)) $attributes = $this->default_attributes
+            if(empty($attributes)) $attributes = $this->default_attributes;
         }
         parent::__construct("mysql:host={$host};dbname={$db};charset={$charset}", $user, $pass, $atrributes);
     }
