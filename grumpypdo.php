@@ -12,11 +12,11 @@ class GrumpyPdo extends \PDO
     );
     public function __construct($host, $user, $pass, $db, $attributes = array(), $charset = "utf8")
     {
-		if(!is_array($attributes)) {
-			$attributes = array();
-		} else {
-			if(empty($attributes)) $attributes = $this->default_attributes
-		}
+        if($attributes == NULL && !is_array($attributes)) {
+            $attributes = array();
+        } else {
+            if(empty($attributes)) $attributes = $this->default_attributes
+        }
         parent::__construct("mysql:host={$host};dbname={$db};charset={$charset}", $user, $pass, $atrributes);
     }
     public function run($query, $values = array())
