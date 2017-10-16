@@ -31,32 +31,16 @@ class GrumpyPdo extends \PDO
     
     public function run($query, $values = array())
     {
-        try {
-            if (!empty($values)) {
-                $stmt = $this->prepare($query);
-                $stmt->execute($values);
-            } else {
-                $stmt = $this->query($query);
-            }
+        if (!$values) {
+            return $this->query($query)
         }
-        catch (PDOException $e) {
-            $this->handleError($e->getMessage());
-            throw $e;
-        }
-        return $stmt;
+        $stmt = $this->prepare($query);
+        $stmt->execute($values);
+	return $stmt;
     }
     
     private function getDSN($host, $db, $charset)
     {
         return "mysql:host={$host};dbname={$db};charset={$charset}";
-    }
-    
-    private function handleError($error)
-    {
-        error_log($error);
-        if ($this->echoOnError)
-            echo $error;
-        if ($this->killOnError)
-            die();
     }
 }
