@@ -26,7 +26,7 @@ class GrumpyPdo extends \PDO
     public function run($query, $values = array())
     {
         if (!$values) {
-            return $this->query($query)
+            return $this->query($query);
         }
         $stmt = $this->prepare($query);
         $stmt->execute($values);
