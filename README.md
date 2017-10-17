@@ -51,10 +51,13 @@ Let's start with selecting all columns.
 
 ```
 $stmt = $db->run("SELECT `fname`, `lname` FROM users")->fetchAll();
+//OR
+$stmt = $db->all("SELECT `fname`, `lname` FROM users");
 ```
 
-Notice I used `fetchAll()` after the query, this is a "PDOStatement". Because the class returns the query as an object, you can use native PDO statement types, making this solution very powerful.
+Notice you can use `fetchAll()` after the query, this is a "PDOStatement". Because the class method `run()` returns the query as an object, you can use native PDO statement types, making this solution very powerful.
 [Here is some more PDOStatements that can be used with this class](http://php.net/manual/en/class.pdostatement.php)
+Or you can simply use the built in "Quick Queries" as noted in the code snippet above.
 
 Moving on, the above query will return an array that looks like this:
 
@@ -98,9 +101,18 @@ Consider the table from above, and consider that we only want results of people 
 
 ```
 $name = "John";
-$stmt = $db->run("SELECT * FROM users WHERE fname=?", [$name])->fetchAll();
+$stmt = $db->run("SELECT fname, lname FROM users WHERE fname=?", [$name])->fetchAll();
 //OR
-$stmt = $db->run("SELECT * FROM users WHERE fname=:name", ["name" => $name])->fetchAll();
+$stmt = $db->all("SELECT fname, lname FROM users WHERE fname=?", [$name]);
+```
+
+You could also use named variables.
+
+```
+$name = "John";
+$stmt = $db->run("SELECT fname, lname FROM users WHERE fname=:name", ["name" => $name])->fetchAll();
+//OR
+$stmt = $db->all("SELECT fname, lname FROM users WHERE fname=:name", ["name" => $name]);
 ```
 
 The code above will return an array:
@@ -110,14 +122,12 @@ Array
 (
     [1] => Array
         (
-            [uid] => 1
             [fname] => John
             [lname] => Doe
         )
 
     [2] => Array
         (
-            [uid] => 4
             [fname] => John
             [lname] => Baldwin
         )
