@@ -18,11 +18,11 @@ class GrumpyPdo extends \PDO
     public function __construct($host, $user, $pass, $db, $attributes = array(), $charset = "utf8")
     {
         if(!is_array($attributes)) {
-			if($attributes == NULL) {
-				$attributes = array();
-			} else {
-				$attributes = $this->default_attributes;
-			}
+        if($attributes == NULL) {
+            $attributes = array();
+        } else {
+            $attributes = $this->default_attributes;
+        }
         } else {
             if(empty($attributes)) $attributes = $this->default_attributes;
         }
