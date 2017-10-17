@@ -17,8 +17,12 @@ class GrumpyPdo extends \PDO
     protected $last_affected_rows = 0;
     public function __construct($host, $user, $pass, $db, $attributes = array(), $charset = "utf8")
     {
-        if($attributes == NULL && !is_array($attributes)) {
-            $attributes = array();
+        if(!is_array($attributes)) {
+			if($attributes == NULL) {
+				$attributes = array();
+			} else {
+				$attributes = $this->default_attributes;
+			}
         } else {
             if(empty($attributes)) $attributes = $this->default_attributes;
         }
