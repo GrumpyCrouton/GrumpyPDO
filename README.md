@@ -26,35 +26,7 @@ This will load all of the GrumpyPDO default attributes and the default charset f
 - PDO::ATTR_EMULATE_PREPARES => false,
 - charset: utf8
 
-You can also set PDO attributes and a charset on the fly.
-```
-include "grumpypdo.php";
-
-$opt = [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    PDO::ATTR_EMULATE_PREPARES => false,
-];
-
-$charset = "utf8";
-
-$db = new GrumpyPDO("localhost", "username", "password", "database", $opt, $charset);
-```
-> Note: This will completely overwrite the GrumpyPDO defaults, so you must include any attributes you want, even if they are enabled by default by GrumpyPDO!
-
-> Note: In the example above with the `$opt` variable, these are the default settings of the class, but I was trying to show that you can set whatever you want there.
-
-But Grumpy, what if I want to use GrumpyPDO's default attributes but change my charset? You are able to do that as well! All you have to do is pass an empty array for the 5th parameter!
-
-```
-$db = new GrumpyPDO("localhost", "username", "password", "database", [], $charset);
-```
-
-Oh, so I can't choose to not use any attributes?? Pfft, of course you can! All you have to do is pass `NULL` to the 5th parameter! This will cause PDO to connect without any of the parameters, in other words, it will base it off of your PHP installation defaults.
-
-```
-$db = new GrumpyPDO("localhost", "username", "password", "database", NULL, $charset);
-```
+**_If you would like more detailed setup instructions including how to overwrite the default attributes and charset, please [check out this wiki page](https://github.com/GrumpyCrouton/GrumpyPDO/wiki/Page-Setup---PDO--VS-GrumpyPDO)_**
 
 ## Simple Usage Instructions
 
