@@ -49,76 +49,38 @@ Table Name: **users**
 
 Let's start with selecting all columns.
 
-#### Native VS GrumpyPDO
-
-##### GrumpyPDO
 ```
-$stmt = $db->run("SELECT * FROM users")->fetchAll();
+$stmt = $db->run("SELECT `fname`, `lname` FROM users")->fetchAll();
 ```
 
 Notice I used `fetchAll()` after the query, this is a "PDOStatement". Because the class returns the query as an object, you can use native PDO statement types, making this solution very powerful.
 [Here is some more PDOStatements that can be used with this class](http://php.net/manual/en/class.pdostatement.php)
 
-##### Native PDO
-
-First, we would have to set up the database connection.
-
-```
-//Setting up the database connection
-$host = 'localhost';
-$db   = '';
-$user = '';
-$pass = '';
-$charset = 'utf8';
-
-$opt = [
-	PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-	PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-	PDO::ATTR_EMULATE_PREPARES   => false,
-];
-$dsn = "mysql:host={$host};dbname={$db};charset={$charset}";
-
-$db = new PDO($dsn, $user, $pass, $opt);
-//end setting up
-```
-
-Then we can actually do the query:
-
-```
-$stmt = $db->query("SELECT * FROM users")->fetchAll();
-```
-
-#### Results
-
-Moving on, the above query will return an array of values. This array will look like this:
+Moving on, the above query will return an array that looks like this:
 
 ```
 Array
 (
     [0] => Array
         (
-            [uid] => 1
             [fname] => John
             [lname] => Doe
         )
 
     [1] => Array
         (
-            [uid] => 2
             [fname] => Jane
             [lname] => Doe
         )
 
     [2] => Array
         (
-            [uid] => 3
             [fname] => Oswald
             [lname] => Trackt
         )
 
     [3] => Array
         (
-            [uid] => 4
             [fname] => John
             [lname] => Baldwin
         )
@@ -126,19 +88,14 @@ Array
 )
 ```
 
-And from there, all you really need to do is loop through the array like any other PHP array. In other interfaces I have mostly seen people use while loops to get through their data, but for this data you can use a for loop or a foreach loop, which I find easier and cleaner.
-
 ### Why GrumpyPDO is useful
 
-If you notice, regular queries are exactly the same syntax as native PDO (Except use of `run()` instead of `query()`), but you can skip all of the setup as it is already done for you in the class.
+I'm sure you have noticed that regular queries are exactly the same syntax as native PDO (Except use of `run()` instead of `query()`), but you can skip all of the setup as it is already done for you in the class.
 
 The class really comes in handy when you consider parameterizing your queries. This class allows you to **easily** prepare your queries and pass variables all in one line of code.
 
 Consider the table from above, and consider that we only want results of people who's name is "John".
 
-#### Native VS GrumpyPDO
-
-#### GrumpyPDO
 ```
 $name = "John";
 $stmt = $db->run("SELECT * FROM users WHERE fname=?", [$name])->fetchAll();
@@ -146,24 +103,7 @@ $stmt = $db->run("SELECT * FROM users WHERE fname=?", [$name])->fetchAll();
 $stmt = $db->run("SELECT * FROM users WHERE fname=:name", ["name" => $name])->fetchAll();
 ```
 
-#### Native PDO
-Natively, it's a bit more code to do this. 
-```
-$name = "John";
-
-$stmt = $db->prepare("SELECT * FROM users WHERE fname=?");
-$stmt->execute([$name]);
-//OR
-$stmt = $stmt->prepare("SELECT * FROM users WHERE fname=:name");
-$stmt->bindParam(':name', $name);
-$stmt->execute();
-
-$result = $stmt->fetchAll();
-```
-
-#### Results
-
-Each would return the same, following array, but _in my opinion_, the GrumpyPDO syntax is much simpler, you don't have to remember to `prepare()` (As it's always `run()`), AND it only takes 1 line for the actual query instead of 3-4. I think you could technically write native PDO all in one line, but it would be a pretty long line and would probably hurt readability. 
+The code above will return an array:
 
 ```
 Array
@@ -184,6 +124,8 @@ Array
 
 )
 ```
+
+**_If you would like a more in-depth explanation of the differences between this query in GrumpyPDO VS Native PDO, check out [this wiki article](https://github.com/GrumpyCrouton/GrumpyPDO/wiki/Usage---Select-Many-Rows)_**
 
 # Contributors
 - Project Founder - [GrumpyCrouton](https://stackoverflow.com/users/5827005/grumpycrouton)
