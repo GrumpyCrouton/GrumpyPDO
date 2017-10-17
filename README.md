@@ -101,17 +101,18 @@ Consider the table from above, and consider that we only want results of people 
 
 ```
 $name = "John";
-
 $stmt = $db->run("SELECT fname, lname FROM users WHERE fname=?", [$name])->fetchAll();
 //OR
-$stmt = $db->run("SELECT fname, lname FROM users WHERE fname=:name", ["name" => $name])->fetchAll();
-
-//OR
-
 $stmt = $db->all("SELECT fname, lname FROM users WHERE fname=?", [$name]);
+```
+
+You could also use named variables.
+
+```
+$name = "John";
+$stmt = $db->run("SELECT fname, lname FROM users WHERE fname=:name", ["name" => $name])->fetchAll();
 //OR
 $stmt = $db->all("SELECT fname, lname FROM users WHERE fname=:name", ["name" => $name]);
-
 ```
 
 The code above will return an array:
