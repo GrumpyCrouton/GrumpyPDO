@@ -10,11 +10,7 @@ class GrumpyPdo extends \PDO
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES   => false,
     );
-    /**
-     * @var int
-     * Holds the value of the amount of affected rows from the last query.
-     */
-    protected $last_affected_rows = 0;
+    
     public function __construct($host, $user, $pass, $db, $attributes = array(), $charset = "utf8")
     {
         if(!is_array($attributes)) {
@@ -33,17 +29,26 @@ class GrumpyPdo extends \PDO
         if(!$values) {
             return $this->query($query);
         }
-        $stmt = $this->prepare($query);
         if(!is_array($values[0])) {
+            $stmt = $this->prepare($query);
             return $stmt->execute($values);
         }
-        $this->last_affected_rows = 0;
+        return $this->multi($query, $values);
+    }
+    public function multi($query, $values = array())
+    {
+        if(!is_array($values[0])) 
+		{
+			return false;
+		}
+        $stmt = $this->prepare($query);
+        $alteredRows = 0;
         foreach($values as $value) 
         {
             $stmt->execute($value);
-            $this->last_affected_rows += $stmt->rowCount();
+            $alteredRows += $stmt->rowCount();
         }
-        return $this->last_affected_rows;
+        return $alteredRows;
     }
     /**
      * Quick queries
@@ -60,12 +65,5 @@ class GrumpyPdo extends \PDO
     public function all($query, $values = array()) 
     {
         return $this->run($query, $values)->fetchAll();
-    }
-    /**
-     * Other Methods
-     */
-    public function getLastAffectedRows() 
-    {
-        return $this->last_affected_rows;
     }
 }
