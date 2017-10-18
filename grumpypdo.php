@@ -38,9 +38,9 @@ class GrumpyPdo extends \PDO
     public function multi($query, $values = array())
     {
         if(!is_array($values[0])) 
-		{
-			return false;
-		}
+        {
+            return false;
+        }
         $stmt = $this->prepare($query);
         $alteredRows = 0;
         foreach($values as $value) 
