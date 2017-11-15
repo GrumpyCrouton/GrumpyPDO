@@ -31,7 +31,8 @@ class GrumpyPdo extends \PDO
         }
         if(!is_array($values[0])) {
             $stmt = $this->prepare($query);
-            return $stmt->execute($values);
+            $stmt->execute($values);
+			return $stmt;
         }
         return $this->multi($query, $values);
     }
