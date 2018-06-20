@@ -3,7 +3,7 @@ A simple PHP class wrapper for PDO.
 
 I called this project GrumpyPDO because the native syntax made me so grumpy! (Actually, it's just because my username is Grumpy and I'm not very creative)
 
-If your project is using GrumpyPDO
+If your project is using GrumpyPDO, please send me a message and give me the details of your project! I would love to compile a list of projects that is currently using GrumpyPDO.
 
 ## Background
 
@@ -138,6 +138,10 @@ Array
 ```
 
 **_If you would like a more in-depth explanation of the differences between this query in GrumpyPDO VS Native PDO, check out [this wiki article](https://github.com/GrumpyCrouton/GrumpyPDO/wiki/Usage---Select-Many-Rows)_**
+
+# Projects using GrumpyPDO
+
+- Multiple private projects by GrumpyCrouton.
 
 # Contributors
 - Project Founder - [GrumpyCrouton](https://stackoverflow.com/users/5827005/grumpycrouton)
