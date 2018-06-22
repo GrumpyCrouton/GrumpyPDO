@@ -1,0 +1,19 @@
+{
+    "name": "grumpycrouton/grumpypdo",
+    "type": "library",
+    "description": "GrumpyPDO for PHP",
+    "keywords": ["php","pdo","secure","prepared statements"],
+    "homepage": "https://github.com/GrumpyCrouton/GrumpyPDO/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Grumpy Crouton",
+            "email": "grumpyhobby@gmail.com",
+            "homepage": "https://grumpycrouton.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.1.0"
+    },
+}
