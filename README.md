@@ -53,10 +53,11 @@ Table: **users**:
 The most basic query, of course, is a `SELECT` query with no variables attached.
 
 ```
-    //using Method Chaining;
-    $results = $db->run('SELECT * FROM `users`')->fetchAll();
-    //using Quick Queries
-    $results = $db->all('SELECT * FROM `users`');
+//using Method Chaining;
+$results = $db->run('SELECT * FROM `users`')->fetchAll();
+    
+//using Quick Queries
+$results = $db->all('SELECT * FROM `users`');
 ```
 
 Both of the above are equivalent in GrumpyPDO, and will result in `$results` being a multidimensional array with all of the data from every row of the table in it's own subarray.
@@ -87,10 +88,11 @@ Of course most of the time you'll want to use variables with your queries to get
 For this example, let's get all of the rows from the table that have the first name "John".
 
 ```
-    //using Method Chaining;
-    $results = $db->run('SELECT * FROM `users` WHERE `first_name`=?', ['John'])->fetchAll();
-    //using Quick Queries
-    $results = $db->all('SELECT * FROM `users` WHERE `first_name`=?', ['John']);
+//using Method Chaining;
+$results = $db->run('SELECT * FROM `users` WHERE `first_name`=?', ['John'])->fetchAll();
+    
+//using Quick Queries
+$results = $db->all('SELECT * FROM `users` WHERE `first_name`=?', ['John']);
 ```
 
 The above will result in this array:
@@ -118,10 +120,11 @@ Array
 If you are only expecting a single row result, there is no reason to pull the data into a multidimensional array, it's better to pull it into a single array of values. With GrumpyPDO, this is easy:
 
 ```
-    //using Method Chaining;
-    $result = $db->run('SELECT * FROM `users` WHERE `uid`=?', [1])->fetch();
-    //using Quick Queries
-    $result = $db->row('SELECT * FROM `users` WHERE `uid`=?', [1]);
+//using Method Chaining;
+$result = $db->run('SELECT * FROM `users` WHERE `uid`=?', [1])->fetch();
+    
+//using Quick Queries
+$result = $db->row('SELECT * FROM `users` WHERE `uid`=?', [1]);
 ```
 
 The above will result in this array:
@@ -140,10 +143,11 @@ Array
 If you only want a single value result, such as the `first_name` of a specific user, you can do:
 
 ```
-    //using Method Chaining;
-    $result = $db->run('SELECT `first_name` FROM `users` WHERE `uid`=?', [1])->fetchColumn();
-    //using Quick Queries
-    $result = $db->cell('SELECT `first_name` FROM `users` WHERE `uid`=?', [1]);
+//using Method Chaining;
+$result = $db->run('SELECT `first_name` FROM `users` WHERE `uid`=?', [1])->fetchColumn();
+    
+//using Quick Queries
+$result = $db->cell('SELECT `first_name` FROM `users` WHERE `uid`=?', [1]);
 ```
 
 The above will set `$result` to equal `John`.
@@ -157,9 +161,11 @@ Now that we know how to pull information from our database, we need to learn how
 A majority of DML queries are quite simple, and don't need any special markup the only method you will use is `run()`.
 
 ```
-    $db->run('INSERT INTO `users` (`first_name`, `last_name`) VALUES (?, ?)', ['John', 'Cena']); //lets assume this is inserted with `uid`=5
-    $db->run('UPDATE `users` SET `first_name`=? WHERE `uid`=?', ['Barbara', 5]); //changes first_name of row with uid 5 to "Barbara"
-    $db->run('DELETE FROM users WHERE `uid`=?', [5]); //Deletes row with uid 5
+$db->run('INSERT INTO `users` (`first_name`, `last_name`) VALUES (?, ?)', ['John', 'Cena']); //lets assume this is inserted with `uid`=5
+    
+$db->run('UPDATE `users` SET `first_name`=? WHERE `uid`=?', ['Barbara', 5]); //changes first_name of row with uid 5 to "Barbara"
+    
+$db->run('DELETE FROM users WHERE `uid`=?', [5]); //Deletes row with uid 5
 ```
 
 Again, passing variables this way allows GrumpyPDO to automatically prepare your query and sent the data separately, mitigating risk of SQL Injection, this data does not need to be escaped or sanitized.
@@ -193,7 +199,7 @@ For small datasets, this is kind of overkill, but for larger datasets it is a hu
 GrumpyPDO supports named parameters.
 
 ```
-    $db->run("SELECT * FROM `users` WHERE `first_name`=:name", ["name" => 'John']);
+$db->run("SELECT * FROM `users` WHERE `first_name`=:name", ["name" => 'John']);
 ```
 
 # Contributors
