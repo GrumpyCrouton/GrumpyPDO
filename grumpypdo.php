@@ -10,46 +10,34 @@ class GrumpyPdo extends \PDO
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES   => false,
     );
-    
-    public function __construct($host, $user, $pass, $db, $attributes = array(), $charset = "utf8")
+    public function __construct($hostname, $username, $password, $database, $attributes = array(), $charset = "utf8")
     {
-        if(!is_array($attributes)) {
-            if($attributes == NULL) {
-                $attributes = array();
-            } else {
-                $attributes = $this->default_attributes;
-            }
-        } else {
-            if(empty($attributes)) $attributes = $this->default_attributes;
+        $active_attrs = $this->default_attributes;
+        if(!empty($attributes)) {
+            array_replace($active_attrs, $attributes);
         }
-        parent::__construct("mysql:host={$host};dbname={$db};charset={$charset}", $user, $pass, $attributes);
+        parent::__construct("mysql:host={$hostname};dbname={$database};charset={$charset}", $username, $password, $active_attrs);
     }
     public function run($query, $values = array())
     {
         if(!$values) {
             return $this->query($query);
         }
-        if(!is_array($values[0])) {
-            $stmt = $this->prepare($query);
-            $stmt->execute($values);
-			return $stmt;
-        }
-        return $this->multi($query, $values);
-    }
-    public function multi($query, $values = array())
-    {
-        if(!is_array($values[0])) 
-        {
-            return false;
+        if(is_array($values[0])) {
+           return $this->multi($query, $values); 
         }
         $stmt = $this->prepare($query);
-        $alteredRows = 0;
+        $stmt->execute($values);
+        return $stmt;
+    }
+    private function multi($query, $values = array())
+    {
+        $stmt = $this->prepare($query);
         foreach($values as $value) 
         {
             $stmt->execute($value);
-            $alteredRows += $stmt->rowCount();
         }
-        return $alteredRows;
+        return $stmt;
     }
     /**
      * Quick queries
