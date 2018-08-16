@@ -168,7 +168,7 @@ Again, passing variables this way allows GrumpyPDO to automatically prepare your
 
 GrumpyPDO has the ability to execute multiple sets of data using a single `prepare()`, thus reducing your database touches by half + 1.
 
-Sure, you can easily use a loop to process multiple sets of data using `$db->run()`, but this means that `prepare()` and `execute()` will be ran twice _per query_ because both of those methods send a request to your database. (So for example if you are inserting 50 names to your database, it will send 100 different requests to your database)
+Sure, you can easily use a loop to process multiple sets of data using `$db->run()`, but this means that `prepare()` and `execute()` will both be ran _per query_ and both of those methods send a request to your database. (So for example if you are inserting 50 names to your database, it will send 100 different requests to your database)
 
 But there is a better way! Simply form a multidimensional array of all of the values you'd like to send to the database, and pass that multidimensional array all at once instead of each set of data at a time. For a quick example, let's insert 3 new users into our users table.
 
