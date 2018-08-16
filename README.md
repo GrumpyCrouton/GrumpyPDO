@@ -13,7 +13,7 @@ I wrote this simple class based on a function that I wrote when I switched from 
 
 ### Composer
 
-GrumpyPDO has Composer support! The composer package is `grumpycrouton/grumpypdo`
+- GrumpyPDO has Composer support! The composer package is `grumpycrouton/grumpypdo`
 
 ### Manual
 
@@ -38,6 +38,7 @@ If you want to add more attributes, or alter existing ones, pass an array of att
 This section will walk through some basic use instructions. All of the following examples will utilize the following database table:
 
 Table: **users**:
+
 | uid           |    first_name |     last_name |
 | ------------- | ------------- | ------------- |
 | 1             |   John        |     Doe       |
