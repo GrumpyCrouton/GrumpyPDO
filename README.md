@@ -37,10 +37,10 @@ If you want to add more attributes, or alter existing ones, pass an array of att
 For any query, you could choose to use the run() method. This method returns a PDOStatement Object, so you can interact with it like native PDO.
 
 ```
-$output = $db->run("SELECT * FROM users");
+$output = $db->run("SELECT * FROM users WHERE type=?", ['admin;]);
 ```
 
-This is essentially the same as running `$pdo->query()` or `$pdo->prepare()` (depending on if you send any values with it or not), then getting the PDOStatement Object from that. This means you can use one of PDO's many [Fetch Modes](https://phpdelusions.net/pdo/fetch_modes).
+This is essentially the same as running `$pdo->query()` or `$pdo->prepare()` (depending on if you send any values with it or not) and executing the query at the same time, then returning the PDOStatement Object from that. This means you can use one of PDO's many [Fetch Modes](https://phpdelusions.net/pdo/fetch_modes) from there.
 
 ### Quick Queries
 
