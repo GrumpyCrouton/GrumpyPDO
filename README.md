@@ -32,6 +32,16 @@ If you want to add more attributes, or alter existing ones, pass an array of att
 
 ## Selecting Data
 
+### Manual Select Queries
+
+For any query, you could choose to use the run() method. This method returns a PDOStatement Object, so you can interact with it like native PDO.
+
+```
+$output = $db->run("SELECT * FROM users");
+```
+
+This is essentially the same as running `$pdo->query()` or `$pdo->prepare()` (depending on if you send any values with it or not), then getting the PDOStatement Object from that. This means you can use one of PDO's many [Fetch Modes](https://phpdelusions.net/pdo/fetch_modes).
+
 ### Quick Queries
 
 All of the following examples can accept up to 2 parameters. `$query` and `$values`.
