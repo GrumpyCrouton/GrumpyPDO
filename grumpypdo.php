@@ -54,9 +54,6 @@ class GrumpyPdo extends \PDO
      * @var string - A table name, which must already exist in your database.
      * @var array - A key value pair of values to pass to the queries SET clause.
      * @var array - A key value pair of values to pass to the queries WHERE clause. Each set will be separated by 'AND'.
-     *
-     * MUST USED ANONYMOUS PLACEHOLDERS, DOES NOT SUPPORT NAMED PARAMETERS.
-     * This is to allow you to use the same columns in the SET and WHERE clause
      */
     public function update($table, $updates, $where)
     {
