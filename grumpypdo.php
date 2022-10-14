@@ -52,13 +52,8 @@ class GrumpyPdo extends \PDO
     public function insert($table, $inserts)
     {
         $is_multi_set = !empty($inserts[0]) && is_array($inserts[0]);
-        if(!$this->verify_table($table)) {
-            throw new Exception('The given table does not exist in the database');
-        }
-
-        $set_keys = array_keys($is_multi_set ? $inserts[0] : $inserts);
-        if(!$this->verify_columns($table, $set_keys)) {
-            throw new Exception('One or more of the supplied columns do not exist in the supplied table');
+        if(!$this->verifyTablesAndColumns($table, array_keys($is_multi_set ? $inserts[0] : $inserts))) {
+            return false;
         }
 
         $query_keys = [];
@@ -81,13 +76,9 @@ class GrumpyPdo extends \PDO
      */
     public function update($table, $updates, $where)
     {
-        if(!$this->verify_table($table)) {
-            throw new Exception('The given table does not exist in the database');
-        }
-
         $columns = array_merge(array_keys($updates), array_keys($where));
-        if(!$this->verify_columns($table, $columns)) {
-            throw new Exception('One or more of the supplied columns do not exist in the supplied table');
+        if(!$this->verifyTablesAndColumns($table, $columns)) {
+            return false;
         }
 
         $data_sets = [
@@ -149,30 +140,30 @@ class GrumpyPdo extends \PDO
     }
 
     /**
-     * If the table is not in the verified_databases array, then check if it exists in the database. If
-     * it does, then add it to the verified_databases array.
+     * It checks if the table exists in the database, if it does, it checks if the columns exist in the
+     * table.
      * 
-     * @param table The table name
+     * @param verify_table The table to verify
+     * @param verify_columns An array of columns to verify exist in the table
+     * 
+     * @return a boolean value.
      */
-    private function verify_table($table)
+    private function verifyTablesAndColumns($verify_table, $verify_columns)
     {
-        $exists = array_key_exists($table, $this->verified_databases);
-        if(!$exists && $exists = in_array($table, $this->column('SHOW TABLES'))) {
-            $this->verified_databases[$table] = $this->column("SHOW COLUMNS FROM `{$table}`");
+        $tables = &$this->verified_databases;
+        if(!array_key_exists($verify_table, $tables)) {
+            $tables = array_fill_keys(array_keys(array_flip($this->column('SHOW TABLES'))), null);
         }
-        return $exists;
-    }
-
-    /**
-     * If the table exists in the verified_databases array, and the columns are all in the table, then
-     * return true
-     * 
-     * @param table The table name
-     * @param columns The columns you want to select from the table.
-     */
-    private function verify_columns($table, $columns)
-    {
-        return array_key_exists($table, $this->verified_databases) && !array_diff($columns, $this->verified_databases[$table]);
+        if($exists = array_key_exists($verify_table, $tables) && empty($tables[$verify_table])) {
+            $tables[$verify_table] = $this->column("SHOW COLUMNS FROM `{$verify_table}`");
+        } else {
+            throw new Exception('The given table does not exist in the database');
+        }
+        $columns_valid = !array_diff($verify_columns, $tables[$verify_table]);
+        if(!$columns_valid) {
+            throw new Exception('One or more of the supplied columns do not exist in the supplied table');
+        }
+        return $columns_valid;
     }
 
     /**
