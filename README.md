@@ -1,6 +1,6 @@
 # GrumpyPDO
 
-A simple and secure PHP class wrapper for designed for simplicity and ease of use, and makes running database queries **easier**, **cleaner**, and most importantly **safer** without the learning curve of how to utilize Prepared Statements.
+A simple and secure PHP class wrapper for PDO designed for simplicity and ease of use, and makes running database queries **easier**, **cleaner**, and most importantly **safer** without the learning curve of how to utilize Prepared Statements.
 
 ### Check out the [Wiki for Documentation](https://github.com/GrumpyCrouton/GrumpyPDO/wiki)
 
