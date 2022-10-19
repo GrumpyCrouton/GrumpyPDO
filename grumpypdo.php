@@ -10,7 +10,7 @@ class GrumpyPdo extends \PDO
         PDO::ATTR_EMULATE_PREPARES => false,
     );
 
-    private $verified_databases = [];
+    private $verified_tables = [];
 
     public function __construct($hostname, $username, $password, $database, $attributes = array(), $dsn_prefix = "mysql", $dsn_param_string = "")
     {
@@ -52,21 +52,24 @@ class GrumpyPdo extends \PDO
     public function insert($table, $inserts)
     {
         $is_multi_set = !empty($inserts[0]) && is_array($inserts[0]);
-        if(!$this->verifyTablesAndColumns($table, array_keys($is_multi_set ? $inserts[0] : $inserts))) {
+        $single_data_set = $is_multi_set ? $inserts[0] : $inserts;
+
+        if(!$this->verifyTablesAndColumns($table, $set_keys = array_keys($single_data_set))) {
             return false;
         }
 
-        $query_keys = [];
-        $query_placeholders = [];
-        foreach($set_keys as $key) {
-            $query_placeholders[] = ":{$key}";
-            $query_keys[] = "`$key`";
+        if(!$is_multi_set) {
+            $inserts = array_values($inserts);
+        } else {
+            foreach($inserts as &$i) {
+                $i = array_values($i);
+            }
         }
 
-        $query_keys = implode(', ', $query_keys);
-        $query_placeholders = implode(', ', $query_placeholders);
+        $query_keys = implode('`, `', $set_keys);
+        $query_placeholders = implode(', ', array_fill(0, count($set_keys), "?"));
 
-        return $this->run("INSERT INTO {$table} ({$query_keys}) VALUES ({$query_placeholders})", $inserts);
+        return $this->run("INSERT INTO `{$table}` (`{$query_keys}`) VALUES ({$query_placeholders})", $inserts);
     }
 
     /**
@@ -81,54 +84,55 @@ class GrumpyPdo extends \PDO
             return false;
         }
 
-        $data_sets = [
-            'set' => [
-                'array' => $updates, 'separator' => ', '
-            ],
-            'where' => [
-                'array' => $where, 'separator' => ' AND '
-            ],
-        ];
-
-        /* Creating a query string for the SET and WHERE clauses. */
-        foreach($data_sets as $type => &$d) {
-            foreach(array_keys($d['array']) as $key) {
-                print_r($key);
-                $d['query_clause'][] = "`{$key}`=?";
+        /* Creating a query string for the SET and WHERE clauses, and an array of parameters. */
+        $p = [];
+        $d = [['v' => $updates, 's' => ', '], ['v' => $where, 's' => ' AND ']];
+        foreach($d as &$s) {
+            foreach(array_keys($s['v']) as $k) {
+                $s['c'][] = "`{$k}`=?";
             }
-            $d['query_clause'] = implode($d['separator'], $d['query_clause']);
+            $s['c'] = implode($d['s'], $s['c']);
+            $p = array_merge($p, array_values($s['v']));
         }
 
-        return $this->run(
-            "UPDATE {$table} SET {$data_sets['set']['query_clause']} WHERE {$data_sets['where']['query_clause']}", 
-            array_merge(array_values($updates), array_values($where))
-        );
+        return $this->run("UPDATE `{$table}` SET {$d[0]['c']} WHERE {$d[1]['c']}", $p);
     }
 
     /**
-     * Quick queries
-     * Allows you to run a query without chaining the return type manually. This allows for slightly shorter syntax.
+     * @return The first row of the result set. 
+     * Read https://www.php.net/manual/en/pdostatement.fetch.php for more options
      */
-    /**
-     * @return The first row of the result set.
-     */
-    public function row($query, $values = array())
+    public function row($query, $values = array(), $mode = null, $cursorOrientation = null, $cursorOffset = 0)
     {
-        return $this->run($query, $values)->fetch();
+        return $this->run($query, $values)->fetch($mode, $cursorOrientation, $cursorOffset);
     }
+
     /**
-     * @return The first column of the first row of the result set.
+     * @return The $column column of the first row of the result set.
+     * Read https://www.php.net/manual/en/pdostatement.fetchcolumn.php for more options
      */
-    public function cell($query, $values = array())
+    public function cell($query, $values = array(), $column = 0)
     {
-        return $this->run($query, $values)->fetchColumn();
+        return $this->run($query, $values)->fetchColumn($column);
     }
+
     /**
      * @return An array of all the rows in the result set.
+     * Read https://www.php.net/manual/en/pdostatement.fetchall.php for more options
      */
-    public function all($query, $values = array())
+    public function all($query, $values = array(), $mode = null, $c = null, $args = null)
     {
-        return $this->run($query, $values)->fetchAll();
+        $qry = $this->run($query, $values);
+        switch($mode) {
+            case \PDO::FETCH_COLUMN:
+                return $qry->fetchAll($mode, $c);
+            case \PDO::FETCH_CLASS:
+                return $qry->fetchAll($mode, $c, $args);
+            case \PDO::FETCH_FUNC:
+                return $qry->fetchAll($mode, $c);
+            default:
+                return $qty->fetchAll($mode);
+        }
     }
 
     /**
@@ -136,7 +140,34 @@ class GrumpyPdo extends \PDO
      */
     public function column($query, $values = array())
     {
-        return $this->run($query, $values)->fetchAll(\PDO::FETCH_COLUMN);
+        return $this->all($query, $values, \PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * @return An array with the values grouped by the value of the first column in the result set.
+     * The values in each set a set of arrays similar to the all() method
+     */
+    public function group($query, $values = array())
+    {
+        return $this->all($query, $values, \PDO::FETCH_GROUP);
+    }
+
+    /** 
+     * @return An array of the result of the query as a key-value pair. The first column is the index, 
+     * the second column is the value. Does not support duplicate indexes
+     */
+    public function keypair($query, $values = array())
+    {
+        return $this->all($query, $values, \PDO::FETCH_KEY_PAIR);
+    }
+
+    /** 
+     * @return An array of the result of the query as key-value pairs. The first column is the index, 
+     * the value is an array of all of the values from the second column.
+     */
+    public function keypairs($query, $values = array())
+    {
+        return $this->all($query, $values, \PDO::FETCH_GROUP|\PDO::FETCH_COLUMN);
     }
 
     /**
@@ -150,7 +181,7 @@ class GrumpyPdo extends \PDO
      */
     private function verifyTablesAndColumns($verify_table, $verify_columns)
     {
-        $tables = &$this->verified_databases;
+        $tables = &$this->verified_tables;
         if(!array_key_exists($verify_table, $tables)) {
             $tables = array_fill_keys(array_keys(array_flip($this->column('SHOW TABLES'))), null);
         }
@@ -168,17 +199,29 @@ class GrumpyPdo extends \PDO
 
     /**
     * Used to handle running queries with multiple data sets. Automatically used when passing an array of data sets to $this->run
+    * Can only be used for insert queries
     * 
     * @param query The query to execute
     * @param values The data sets associated with the query, an array of key => value pairs
     */
     private function multi($query, $values = array())
     {
-        $stmt = $this->prepare($query);
-        foreach ($values as $value)
-        {
-            $stmt->execute($value);
+        if(substr(strtolower($query), 0, 6) !== "insert") {
+            throw new Exception('Multi data sets can only be used with insert queries');
         }
-        return $stmt;
+        $stmt = $this->prepare($query);
+        try 
+        {
+            $this->beginTransaction();
+            foreach ($values as $value)
+            {
+                $stmt->execute($value);
+            }
+            $this->commit();
+            return $stmt;
+        } catch(Exception $e) {
+            $pdo->rollback();
+            throw $e;
+        }
     }
 }
