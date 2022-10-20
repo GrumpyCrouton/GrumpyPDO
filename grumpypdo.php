@@ -131,7 +131,7 @@ class GrumpyPdo extends \PDO
             case \PDO::FETCH_FUNC:
                 return $qry->fetchAll($mode, $c);
             default:
-                return $qty->fetchAll($mode);
+                return $qry->fetchAll($mode);
         }
     }
 
