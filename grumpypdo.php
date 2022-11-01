@@ -91,7 +91,7 @@ class GrumpyPdo extends \PDO
             foreach(array_keys($s['v']) as $k) {
                 $s['c'][] = "`{$k}`=?";
             }
-            $s['c'] = implode($d['s'], $s['c']);
+            $s['c'] = implode($s['s'], $s['c']);
             $p = array_merge($p, array_values($s['v']));
         }
 
